@@ -1,14 +1,14 @@
 #!/bin/bash
 
 QUESTIONS_FILE="question.txt"
-HIGHSCORES_FILE="highscores.txt"
+export HIGHSCORES_FILE="highscores.txt"
 
 # Ask your name
-read -r -p "Enter your name: " PLAYER
+read -r -p "Enter your name: " Username
 
 # Check if empty, force a name
-while [[ -z "$PLAYER" ]]; do
-    read -r -p "Please enter a valid name: " PLAYER
+while [[ -z "$Username" ]]; do
+    read -r -p "Please enter a valid name: " Username
 done
 
 echo "Welcome, $PLAYER! Let's start the quiz!"
@@ -26,13 +26,30 @@ while IFS= read -r line; do
     questions+=("$line")
 done < "$QUESTIONS_FILE"
 
-# Shuffle the question indices
-shuffled=($(gshuf -i 0-$((${#questions[@]} - 1))))
+#Create an array of indices
+indices=()
+for ((i=0; i<${#questions[@]}; i++)); do
+    indices+=("$i")
+done
+
+#shuffle
+shuffle_array indices
+
+#Now use "${indices[@]}"
+shuffled=("${indices[@]}")
+
+#function to get the current date in YYYY-MM-DD format
+get_date() {
+   date "+%Y-%m-%d"
+}
 
 # Initialize score and streak
 score=0
 streak=0
-TOTAL_QUESTIONS=${#questions[@]}
+correct=0
+incorrect=0
+longest_streak=0
+TOTAL_QUESTIONS=${#shuffled[@]}
 
 # Function to ask a question
 ask_question() {
@@ -51,13 +68,19 @@ ask_question() {
 
     read -r -p "Your answer (A/B/C/D): " USER_ANSWER
     USER_ANSWER=$(echo "$USER_ANSWER" | tr '[:lower:]' '[:upper:]')  # Convert to uppercase
+
     if [[ $USER_ANSWER == "$ANSWER" ]]; then
         echo "Correct!"
         score=$((score + 1))
         streak=$((streak + 1))
+        correct=$((correct + 1))
+    if ((streak > longest_streak)); then
+          longest_streak=$streak
+      fi    
     else
         echo "Wrong! The correct answer was $ANSWER."
         streak=0  # Reset streak if the answer is wrong
+        incorrect=$((incorrect + 1))
     fi
 }
 
@@ -71,8 +94,45 @@ for idx in "${shuffled[@]}"; do
     D=$(echo "$line" | cut -d '|' -f5)
     ANSWER=$(echo "$line" | cut -d '|' -f6 | tr -d '[:space:]')
 
-    ask_question "$Q" "$A" "$B" "$C" "$D" "$ANSWER"
+   #Clear the screen for better user experience
+   clear
+   ask_question "$Q" "$A" "$B" "$C" "$D" "$ANSWER"
 done
 
-# Final score
-echo "You scored $score out of $TOTAL_QUESTIONS."
+# Function to show final stats
+show_stats() {
+   echo ""
+   echo "============RESULTS==========="
+    echo -e "\nGame Over!"
+    echo "Correct: $correct"
+    echo "Incorrect: $incorrect"
+    echo "Longest streak: $longest_streak"
+    echo "Total Questions: $TOTAL_QUESTIONS"
+    echo "Final Score: $((correct * 100 / TOTAL_QUESTIONS))%"
+}
+
+save_highscore() {
+    read -r username
+    local score_percent=$((correct * 100 / TOTAL_QUESTIONS))
+    local date
+    date=$(get_date)
+    echo "$username|$score_percent|$correct/$TOTAL_QUESTIONS|$date" >> "$HIGHSCORES_FILE"
+}
+show_highscores() {
+    if [[ ! -f "$HIGHSCORES_FILE" ]]; then
+      echo "No high score avialable"
+      return
+    fi
+
+    echo -e "\nTop 5 High Scores:"
+    sort -t '|' -k2,2nr highscores.txt | head -n 5 | while IFS='|' read -r username score correct_total date; do
+        echo "$username - $score% ($correct_total) on $date"
+    done
+} 
+
+#Option to save high score after game
+show_stats
+save_highscore
+
+echo ""
+echo "High score saved!"
