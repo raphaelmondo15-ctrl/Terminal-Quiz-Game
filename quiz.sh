@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 
 QUESTIONS_FILE="question.txt"
 export HIGHSCORES_FILE="highscores.txt"
