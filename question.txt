@@ -1,0 +1,11 @@
+What is the capital of France?|Paris|Rome|Berlin|Madrid|A
+Who won the FIFA World Cup in 2018|Brazil|Germany|France|Argentina|C
+Which player has won the most Ballon d'Or awards?|Cristiano Ronaldo|Lionnel Messi|Johan Cruyff|Michel Plantini|B
+Which country has won the most AFCON titles?|Egypt|Nigeria|Cameroon|Ghana|A 
+Who won the UEFA Euro 2020 tournament?|Italy|England|Portugal|Spain|A 
+who is the all time top scorer for the Cameroon national team?|Samuel Eto'o|Roger Milla|Vincent Aboubakar|Patrick Mboma|A 
+which country hosted the 2010 FIFA World Cup?|Germany|Brazil|South Africa|USA|C
+Who is the top scorer in UEFA Champions league histry?|Karim Benzema|Robert Lewandowski|Cristiano Ronaldo|Lionnel Messi|C 
+Which club is known as "Red Devils"?|Liverpool|Manchester City|Manchester United|Arsenal|C 
+Which player is nickname 'EL Pibe de Oro'?|Diego Maradona|Pele|Ronaldinho|Zinedine Zidane|A 
+who won the Ballon d'Or 2024\2025?|Dembele|Yamale|Mbappe|vini jr|A 
